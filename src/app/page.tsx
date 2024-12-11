@@ -101,6 +101,8 @@ export default function Page(): JSX.Element {
         </Button>
       ) : null}
       <Abstraxion
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-expect-error
         isOpen={isOpen}
         onClose={() => {
           setIsOpen(false);
