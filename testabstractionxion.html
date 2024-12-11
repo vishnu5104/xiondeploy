@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Abstraxion</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@burnt-labs/ui/dist/style.css"
+    />
+    <script type="module">
+      import AbstraxionModule from 'https://unpkg.com/@burnt-labs/abstraxion/dist/index.js';
+      const { Abstraxion, useAbstraxionAccount, useModal } = AbstraxionModule;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const connectButton = document.getElementById('connectButton');
+        const modalContainer = document.getElementById('modalContainer');
+        const accountInfo = document.getElementById('accountInfo');
+        const accountAddress = document.getElementById('accountAddress');
+
+        let showModal = false;
+
+        const {
+          data: { bech32Address },
+          isConnected,
+          isConnecting,
+        } = useAbstraxionAccount();
+
+        const [, setShow] = useModal();
+
+        function toggleModal(visible) {
+          showModal = visible;
+          modalContainer.style.display = showModal ? 'block' : 'none';
+        }
+
+        connectButton.addEventListener('click', () => {
+          if (bech32Address) {
+            console.log('Account already connected');
+          } else {
+            setShow(true);
+            toggleModal(true);
+          }
+        });
+
+        if (bech32Address) {
+          accountInfo.style.display = 'block';
+          accountAddress.textContent = bech32Address;
+        } else {
+          accountInfo.style.display = 'none';
+        }
+
+        Abstraxion({ onClose: () => toggleModal(false) });
+
+        console.log({ isConnected, isConnecting });
+      });
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .container {
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      #modalContainer {
+        display: none;
+      }
+      #accountInfo {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Abstraxion</h1>
+      <button id="connectButton" class="btn btn-primary">CONNECT</button>
+
+      <div id="accountInfo" class="border border-primary rounded-md p-4">
+        <div>Address: <span id="accountAddress"></span></div>
+      </div>
+
+      <div id="modalContainer">
+        <abstraxion-modal></abstraxion-modal>
+      </div>
+    </main>
+  </body>
+</html>
